@@ -24,3 +24,28 @@ func (mangaService *MangaService) CreateService(name, description string) (*enti
 
 	return manga, nil
 }
+
+func (mangaService *MangaService) GetById(id string) (*entity.Manga, error) {
+	manga, err := mangaService.MangaDB.GetById(id)
+
+	if err != nil {
+		return nil, err
+	}
+	return manga, nil
+}
+
+func (mangaService *MangaService) GetAll() ([]*entity.Manga, error) {
+	mangas, err := mangaService.MangaDB.GetAll()
+
+	if err != nil {
+		return nil, err
+	}
+
+	return mangas, err
+}
+
+func (mangaService *MangaService) Delete(id string) (result bool) {
+	delete := mangaService.MangaDB.Delete(id)
+
+	return delete
+}

@@ -5,13 +5,15 @@ import (
 	"challenger/internal/database"
 	"challenger/internal/services"
 	"database/sql"
+	"fmt"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
+	_ "github.com/go-sql-driver/mysql"
 )
 
 func main() {
-	db, err := sql.Open("mysql", "")
+	db, err := sql.Open("mysql", "root:root@tcp(localhost:3306)/manga")
 
 	if err != nil {
 		panic(err.Error())
@@ -25,6 +27,8 @@ func main() {
 
 	router := chi.NewRouter()
 	router.Post("/create", mangaController.Create)
-
+	router.Get("/manga/{id}", mangaController.GetById)
+	router.Delete("/manga/{id}", mangaController.Delete)
+	fmt.Println("Server is running on port 8080")
 	http.ListenAndServe(":8080", router)
 }
