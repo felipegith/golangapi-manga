@@ -47,13 +47,34 @@ func (mangaHandle *MangaController) GetById(writer http.ResponseWriter, request 
 	manga, err := mangaHandle.MangaService.GetById(id)
 
 	if err != nil {
+		switch err.Error() {
+		case "sql: no rows in result set":
+			http.Error(writer, "Manga not found", http.StatusNotFound)
+			return
+
+		default:
+			http.Error(writer, err.Error(), http.StatusInternalServerError)
+			return
+		}
+	}
+	json.NewEncoder(writer).Encode(manga)
+}
+
+func (mangaHandle *MangaController) GetAll(writer http.ResponseWriter, request *http.Request) {
+	mangas, err := mangaHandle.MangaService.GetAll()
+
+	if err != nil {
 		http.Error(writer, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	json.NewEncoder(writer).Encode(manga)
-}
+	if mangas == nil {
+		http.Error(writer, "Mangas not found", http.StatusNotFound)
+		return
+	}
 
+	json.NewEncoder(writer).Encode(mangas)
+}
 func (mangaHandle *MangaController) Delete(writer http.ResponseWriter, request *http.Request) {
 	id := chi.URLParam(request, "id")
 
@@ -70,4 +91,22 @@ func (mangaHandle *MangaController) Delete(writer http.ResponseWriter, request *
 		return
 	}
 
+}
+
+func (mangaHandle *MangaController) Update(writer http.ResponseWriter, request *http.Request) {
+	var manga entity.Manga
+	err := json.NewDecoder(request.Body).Decode(&manga)
+
+	if err != nil {
+		http.Error(writer, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	result, err := mangaHandle.MangaService.UpdateService(manga.ID, manga.Name, manga.Description)
+
+	if err != nil {
+		http.Error(writer, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	json.NewEncoder(writer).Encode(result)
 }

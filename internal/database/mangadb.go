@@ -56,11 +56,33 @@ func (mangadb *MangaDB) GetAll() ([]*entity.Manga, error) {
 }
 
 func (mangadb *MangaDB) Delete(id string) (result bool) {
-	_, err := mangadb.database.Exec("DELETE FROM mangas WHERE ID = ?", id)
+	delete, err := mangadb.database.Exec("DELETE FROM mangas WHERE ID = ?", id)
 
 	if err != nil {
 		return false
 	}
 
+	rowsAffect, err := delete.RowsAffected()
+
+	if rowsAffect <= 0 {
+		return false
+	}
+
 	return true
+}
+
+func (mangadb *MangaDB) Update(mangaUpdate *entity.Manga, id string) (*entity.Manga, error) {
+	update, err := mangadb.database.Exec("UPDATE mangas SET Name = ?, Description = ? WHERE ID = ?", mangaUpdate.Name, mangaUpdate.Description, id)
+
+	if err != nil {
+		return nil, err
+	}
+
+	rowsAffect, err := update.RowsAffected()
+
+	if rowsAffect <= 0 {
+		return nil, err
+	}
+
+	return mangaUpdate, err
 }
