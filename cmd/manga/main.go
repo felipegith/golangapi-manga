@@ -26,9 +26,13 @@ func main() {
 	mangaController := controller.Constructor(mangaService)
 
 	router := chi.NewRouter()
+
+	router.Put("/manga", mangaController.Update)
+	router.Get("/mangas", mangaController.GetAll)
 	router.Post("/create", mangaController.Create)
 	router.Get("/manga/{id}", mangaController.GetById)
 	router.Delete("/manga/{id}", mangaController.Delete)
+
 	fmt.Println("Server is running on port 8080")
 	http.ListenAndServe(":8080", router)
 }

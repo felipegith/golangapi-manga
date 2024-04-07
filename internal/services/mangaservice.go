@@ -49,3 +49,15 @@ func (mangaService *MangaService) Delete(id string) (result bool) {
 
 	return delete
 }
+
+func (mangaService *MangaService) UpdateService(id, name, description string) (*entity.Manga, error) {
+	mangaUpdate := entity.Constructor(name, description)
+
+	update, err := mangaService.MangaDB.Update(mangaUpdate, id)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return update, err
+}
