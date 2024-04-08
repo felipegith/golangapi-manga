@@ -33,6 +33,7 @@ func (mangaHandle *MangaController) Create(writer http.ResponseWriter, request *
 		return
 	}
 	json.NewEncoder(writer).Encode(result)
+	writer.WriteHeader(http.StatusCreated)
 }
 
 func (mangaHandle *MangaController) GetById(writer http.ResponseWriter, request *http.Request) {
@@ -90,7 +91,7 @@ func (mangaHandle *MangaController) Delete(writer http.ResponseWriter, request *
 		http.Error(writer, "Manga not found to delete", http.StatusNotFound)
 		return
 	}
-
+	writer.WriteHeader(http.StatusNoContent)
 }
 
 func (mangaHandle *MangaController) Update(writer http.ResponseWriter, request *http.Request) {
