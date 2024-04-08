@@ -16,6 +16,7 @@ import (
 
 func main() {
 	godotenv.Load()
+
 	db, err := sql.Open("mysql", os.Getenv("DB_CONNECTION"))
 
 	if err != nil {
