@@ -6,14 +6,17 @@ import (
 	"challenger/internal/services"
 	"database/sql"
 	"fmt"
+	"github.com/joho/godotenv"
 	"net/http"
+	"os"
 
 	"github.com/go-chi/chi/v5"
 	_ "github.com/go-sql-driver/mysql"
 )
 
 func main() {
-	db, err := sql.Open("mysql", "root:root@tcp(localhost:3306)/manga")
+	godotenv.Load()
+	db, err := sql.Open("mysql", os.Getenv("DB_CONNECTION"))
 
 	if err != nil {
 		panic(err.Error())
